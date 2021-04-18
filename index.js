@@ -27,11 +27,21 @@ client.connect((err) => {
     const serviceCollection = client.db('eventMaker').collection('services');
     const reviewCollection = client.db('eventMaker').collection('reviews');
     const adminCollection = client.db('eventMaker').collection('admins');
+    const orderCollection = client.db('eventMaker').collection('orders');
 
     app.post('/addService', (req, res) => {
 		const newService = req.body;
 		  console.log('adding new event: ', newService)
 		    serviceCollection.insertOne(newService).then((result) => {
+			console.log('inserted count', result.insertedCount);
+			res.send(result.insertedCount > 0);
+		});
+	});
+	
+    app.post('/addOrder', (req, res) => {
+		const newOrder = req.body;
+		  console.log('adding new event: ', newOrder)
+		    orderCollection.insertOne(newOrder).then((result) => {
 			console.log('inserted count', result.insertedCount);
 			res.send(result.insertedCount > 0);
 		});
@@ -71,6 +81,27 @@ client.connect((err) => {
    app.get('/admin', (req, res) => {
 		console.log(req.query.email);
 		adminCollection.find({ email: req.query.email }).toArray((err, items) => {
+			res.send(items);
+		});
+   });
+	
+   app.get('/orderByEmail', (req, res) => {
+		console.log(req.query.email);
+		orderCollection.find({ email: req.query.email }).toArray((err, items) => {
+			res.send(items);
+		});
+   });
+	
+   app.get('/orders', (req, res) => {
+		console.log(req.query.email);
+		orderCollection.find({ }).toArray((err, items) => {
+			res.send(items);
+		});
+   });
+	
+   app.get('/serviceByName', (req, res) => {
+		console.log(req.query.name);
+		serviceCollection.find({ name: req.query.name }).toArray((err, items) => {
 			res.send(items);
 		});
 	});
